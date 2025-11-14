@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "jimeng": {
+      "command": "python3",
+      "args": ["-m", "jimeng_mcp.server"],
+      "env": {
+        "JIMENG_API_KEY": "xxxxxxx",
+        "JIMENG_API_URL": "https://jimeng.duckcloud.fun",
+        "JIMENG_MODEL": "jimeng-4.0"
+      }
+    }
+  }
+}

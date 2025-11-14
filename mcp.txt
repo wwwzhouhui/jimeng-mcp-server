@@ -1,0 +1,120 @@
+-- 即梦4.0 图生图
+-- 请求
+curl --location --request POST 'https://jimeng.duckcloud.fun/v1/images/compositions' \
+--header 'Authorization: Bearer 0c461c8440a06e796ff904494b6f1f4a' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "model": "jimeng-4.0",
+  "prompt": "请把这个2个图片进行合成",
+  "images": [
+        "https://p3-dreamina-sign.byteimg.com/tos-cn-i-tb4s082cfz/bab623359bd9410da0c1f07897b16fec~tplv-tb4s082cfz-resize:0:0.image?lk3s=8e790bc3&x-expires=1788961069&x-signature=cbtnyeSIcqWpngHdoYWFkCra3cA%3D",
+        "https://p3-dreamina-sign.byteimg.com/tos-cn-i-tb4s082cfz/6acf16d07c47413898aea2bdd1ad339e~tplv-tb4s082cfz-resize:0:0.image?lk3s=8e790bc3&x-expires=1788961069&x-signature=30S2i%2FvCH0eRR32CehcEaK8t5ns%3D"
+      ],
+  "width": 1536,
+  "height": 864,
+  "sample_strength": 0.5
+}'
+-- 返回
+{
+    "created": 1763099855,
+    "data": [
+        {
+            "url": "https://p3-dreamina-sign.byteimg.com/tos-cn-i-tb4s082cfz/58093a394c284516a529d7b87cfe302a~tplv-tb4s082cfz-aigc_resize_mark:0:0.png?lk3s=43402efa&x-expires=1763103600&x-signature=XTsw1YriucTwESAkKvqgTH57AGY%3D&format=.png"
+        },
+        {
+            "url": "https://p26-dreamina-sign.byteimg.com/tos-cn-i-tb4s082cfz/fb5a30d7710345cc9f78037a8527bc59~tplv-tb4s082cfz-aigc_resize_mark:0:0.png?lk3s=43402efa&x-expires=1763103600&x-signature=6PFzJHpwdvlklsbOyjE%2FzMNIckM%3D&format=.png"
+        },
+        {
+            "url": "https://p26-dreamina-sign.byteimg.com/tos-cn-i-tb4s082cfz/8609c5580dbe40bcbc004646027c6be7~tplv-tb4s082cfz-aigc_resize_mark:0:0.png?lk3s=43402efa&x-expires=1763103600&x-signature=iKBPzDryLj3p7Yo3ZgrdZZqt1oY%3D&format=.png"
+        },
+        {
+            "url": "https://p26-dreamina-sign.byteimg.com/tos-cn-i-tb4s082cfz/5d0dd5def24848b8b9ee075000101f30~tplv-tb4s082cfz-aigc_resize_mark:0:0.png?lk3s=43402efa&x-expires=1763103600&x-signature=x7%2Fn7dsHm01g4zS3Jmif7wNqD2k%3D&format=.png"
+        }
+    ],
+    "input_images": 2,
+    "composition_type": "multi_image_synthesis"
+}
+
+-- 即梦4.0 文生图
+-- 请求
+curl --location --request POST 'https://jimeng.duckcloud.fun/v1/images/generations' \
+--header 'Authorization: Bearer 0c461c8440a06e796ff904494b6f1f4a' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "model": "jimeng-4.0",
+  "prompt": "请给我生成4张连续的儿童故事绘本-小斑马和小花猫",
+  "negativePrompt": "",
+  "width": 1536,
+  "height": 864,
+  "sample_strength": 0.5
+}'
+
+-- 返回
+{
+    "created": 1763099855,
+    "data": [
+        {
+            "url": "https://p3-dreamina-sign.byteimg.com/tos-cn-i-tb4s082cfz/58093a394c284516a529d7b87cfe302a~tplv-tb4s082cfz-aigc_resize_mark:0:0.png?lk3s=43402efa&x-expires=1763103600&x-signature=XTsw1YriucTwESAkKvqgTH57AGY%3D&format=.png"
+        },
+        {
+            "url": "https://p26-dreamina-sign.byteimg.com/tos-cn-i-tb4s082cfz/fb5a30d7710345cc9f78037a8527bc59~tplv-tb4s082cfz-aigc_resize_mark:0:0.png?lk3s=43402efa&x-expires=1763103600&x-signature=6PFzJHpwdvlklsbOyjE%2FzMNIckM%3D&format=.png"
+        },
+        {
+            "url": "https://p26-dreamina-sign.byteimg.com/tos-cn-i-tb4s082cfz/8609c5580dbe40bcbc004646027c6be7~tplv-tb4s082cfz-aigc_resize_mark:0:0.png?lk3s=43402efa&x-expires=1763103600&x-signature=iKBPzDryLj3p7Yo3ZgrdZZqt1oY%3D&format=.png"
+        },
+        {
+            "url": "https://p26-dreamina-sign.byteimg.com/tos-cn-i-tb4s082cfz/5d0dd5def24848b8b9ee075000101f30~tplv-tb4s082cfz-aigc_resize_mark:0:0.png?lk3s=43402efa&x-expires=1763103600&x-signature=x7%2Fn7dsHm01g4zS3Jmif7wNqD2k%3D&format=.png"
+        }
+    ],
+    "input_images": 2,
+    "composition_type": "multi_image_synthesis"
+}
+
+-- 即梦3.0 文生视频
+-- 请求
+curl --location --request POST 'https://jimeng.duckcloud.fun/v1/videos/generations' \
+--header 'Authorization: Bearer 0c461c8440a06e796ff904494b6f1f4a' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "model": "jimeng-video-3.0",
+  "prompt": "人物慢向前移动",
+  "width": 720,
+  "height": 480,
+  "resolution": "720p"
+}'
+
+--返回
+{
+    "created": 1763101184,
+    "data": [
+        {
+            "url": "https://v9-artist.vlabvod.com/7116397658831c0d93bd87da3ecd227f/69200485/video/tos/cn/tos-cn-v-148450/ooiSksM0DIAfKtgnSdFgCHBsdBfPpIAQERgMHF/?a=4066&ch=0&cr=0&dr=0&er=0&lr=display_watermark_aigc&cd=0%7C0%7C0%7C0&br=6965&bt=6965&cs=0&ds=12&ft=5QYTUxhhe6BMyq1Fy.VJD12Nzj&mime_type=video_mp4&qs=0&rc=Zzs0NmY0Zzg8OmRlZjs6NEBpamg3NGo5cnVmNzczNDM7M0A1LjIzLmItNTIxMjU1Ly1eYSNmcWVhMmQ0Z19hLS1kNC9zcw%3D%3D&btag=c0000e00008000&dy_q=1763101184&feature_id=7bed9f9dfbb915a044e5d473759ce9df&l=20251114141944CE8C4C4A55CBC68E7F9E",
+            "revised_prompt": "人物慢向前移动"
+        }
+    ]
+}
+
+-- 即梦3.0 图生视频
+-- 请求
+curl --location --request POST 'https://jimeng.duckcloud.fun/v1/videos/generations' \
+--header 'Authorization: Bearer 0c461c8440a06e796ff904494b6f1f4a' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "model": "jimeng-video-3.0",
+  "prompt": "人物慢向前移动",
+  "width": 720,
+  "height": 480,
+  "resolution": "720p",
+  "filePaths": ["https://p3-dreamina-sign.byteimg.com/tos-cn-i-tb4s082cfz/bab623359bd9410da0c1f07897b16fec~tplv-tb4s082cfz-resize:0:0.image?lk3s=8e790bc3&x-expires=1788961069&x-signature=cbtnyeSIcqWpngHdoYWFkCra3cA%3D"]
+}'
+
+--返回
+{
+    "created": 1763101184,
+    "data": [
+        {
+            "url": "https://v9-artist.vlabvod.com/7116397658831c0d93bd87da3ecd227f/69200485/video/tos/cn/tos-cn-v-148450/ooiSksM0DIAfKtgnSdFgCHBsdBfPpIAQERgMHF/?a=4066&ch=0&cr=0&dr=0&er=0&lr=display_watermark_aigc&cd=0%7C0%7C0%7C0&br=6965&bt=6965&cs=0&ds=12&ft=5QYTUxhhe6BMyq1Fy.VJD12Nzj&mime_type=video_mp4&qs=0&rc=Zzs0NmY0Zzg8OmRlZjs6NEBpamg3NGo5cnVmNzczNDM7M0A1LjIzLmItNTIxMjU1Ly1eYSNmcWVhMmQ0Z19hLS1kNC9zcw%3D%3D&btag=c0000e00008000&dy_q=1763101184&feature_id=7bed9f9dfbb915a044e5d473759ce9df&l=20251114141944CE8C4C4A55CBC68E7F9E",
+            "revised_prompt": "人物慢向前移动"
+        }
+    ]
+}
