@@ -53,8 +53,10 @@ async def test_remote_service():
 
     # 使用最简单的参数
     simple_data = {
-        "model": "jimeng-4.0",
-        "prompt": "一只猫"
+        "model": "jimeng-4.5",
+        "prompt": "一只猫",
+        "ratio": "1:1",
+        "resolution": "2k"
     }
 
     print(f"📦 请求数据: {json.dumps(simple_data, ensure_ascii=False)}")
@@ -90,14 +92,14 @@ async def test_remote_service():
     print("测试3: 尝试不同模型")
     print("=" * 70)
 
-    for model in ["jimeng-4.0", "jimeng-3.1", "jimeng-2.1"]:
+    for model in ["jimeng-4.5", "jimeng-4.0", "jimeng-3.1"]:
         print(f"\n🧪 测试模型: {model}")
 
         data = {
             "model": model,
             "prompt": "测试",
-            "width": 512,
-            "height": 512
+            "ratio": "1:1",
+            "resolution": "1k"
         }
 
         try:
@@ -130,7 +132,7 @@ async def test_remote_service():
         async with httpx.AsyncClient(timeout=10) as client:
             response = await client.post(
                 f"{API_URL}/v1/images/generations",
-                json={"model": "jimeng-4.0", "prompt": "测试"}
+                json={"model": "jimeng-4.5", "prompt": "测试", "ratio": "1:1", "resolution": "1k"}
             )
             print(f"  HTTP状态: {response.status_code}")
             if response.status_code == 401:

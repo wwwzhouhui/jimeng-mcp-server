@@ -53,7 +53,7 @@ load_dotenv()
 # 配置
 API_BASE_URL = os.getenv("JIMENG_API_URL", "https://jimeng.duckcloud.fun")
 API_KEY = os.getenv("JIMENG_API_KEY", "")
-DEFAULT_MODEL = os.getenv("JIMENG_MODEL", "jimeng-4.0")
+DEFAULT_MODEL = os.getenv("JIMENG_MODEL", "jimeng-4.5")
 
 if not API_KEY:
     raise ValueError("JIMENG_API_KEY 环境变量是必需的")
@@ -112,44 +112,44 @@ async def handle_list_tools() -> list[Tool]:
         Tool(
             name="text_to_image",
             description=(
-                "使用即梦4.0根据文本提示生成图像。"
+                "使用即梦4.5根据文本提示生成图像。"
                 "基于详细的文本描述创建高质量图像。"
-                "支持各种图像尺寸和风格。"
+                "支持多种宽高比和分辨率，jimeng-4.5/4.1/4.0支持智能多图生成。"
             ),
             inputSchema={
                 "type": "object",
                 "properties": {
                     "prompt": {
                         "type": "string",
-                        "description": "要生成图像的详细文本描述"
+                        "description": "要生成图像的详细文本描述，jimeng-4.x支持多图生成（如'生成4张连续场景的图片'）"
                     },
                     "negative_prompt": {
                         "type": "string",
                         "description": "在生成的图像中要避免的内容(可选)",
                         "default": ""
                     },
-                    "width": {
-                        "type": "integer",
-                        "description": "图像宽度(像素)",
-                        "default": 1536,
-                        "enum": [512, 768, 1024, 1536, 2048]
+                    "ratio": {
+                        "type": "string",
+                        "description": "图像宽高比",
+                        "default": "1:1",
+                        "enum": ["1:1", "4:3", "3:4", "16:9", "9:16", "3:2", "2:3", "21:9"]
                     },
-                    "height": {
-                        "type": "integer",
-                        "description": "图像高度(像素)",
-                        "default": 864,
-                        "enum": [512, 768, 864, 1024, 2048]
+                    "resolution": {
+                        "type": "string",
+                        "description": "图像分辨率",
+                        "default": "2k",
+                        "enum": ["1k", "2k", "4k"]
                     },
                     "sample_strength": {
                         "type": "number",
-                        "description": "采样强度(0.0-1.0),数值越高越有创意",
+                        "description": "精细度(0.0-1.0),数值越高越精细",
                         "default": 0.5,
                         "minimum": 0.0,
                         "maximum": 1.0
                     },
                     "model": {
                         "type": "string",
-                        "description": "用于生成的模型",
+                        "description": "用于生成的模型(jimeng-4.5推荐, jimeng-4.1, jimeng-4.0等)",
                         "default": DEFAULT_MODEL
                     }
                 },
@@ -159,8 +159,8 @@ async def handle_list_tools() -> list[Tool]:
         Tool(
             name="image_composition",
             description=(
-                "使用即梦4.0合成/融合多张图像。"
-                "接受2张或更多图像,根据文本提示将它们组合在一起。"
+                "使用即梦4.5合成/融合多张图像。"
+                "接受1-10张图像,根据文本提示将它们组合在一起。"
                 "适用于图像混合、风格迁移或创建合成图像。"
             ),
             inputSchema={
@@ -172,27 +172,28 @@ async def handle_list_tools() -> list[Tool]:
                     },
                     "images": {
                         "type": "array",
-                        "description": "要合成的图像URL数组(至少2张图像)",
+                        "description": "要合成的图像URL数组(1-10张图像)",
                         "items": {
                             "type": "string"
                         },
-                        "minItems": 2
+                        "minItems": 1,
+                        "maxItems": 10
                     },
-                    "width": {
-                        "type": "integer",
-                        "description": "输出图像宽度(像素)",
-                        "default": 1536,
-                        "enum": [512, 768, 1024, 1536, 2048]
+                    "ratio": {
+                        "type": "string",
+                        "description": "输出图像宽高比",
+                        "default": "1:1",
+                        "enum": ["1:1", "4:3", "3:4", "16:9", "9:16", "3:2", "2:3", "21:9"]
                     },
-                    "height": {
-                        "type": "integer",
-                        "description": "输出图像高度(像素)",
-                        "default": 864,
-                        "enum": [512, 768, 864, 1024, 2048]
+                    "resolution": {
+                        "type": "string",
+                        "description": "输出图像分辨率",
+                        "default": "2k",
+                        "enum": ["1k", "2k", "4k"]
                     },
                     "sample_strength": {
                         "type": "number",
-                        "description": "采样强度(0.0-1.0)",
+                        "description": "精细度(0.0-1.0)",
                         "default": 0.5,
                         "minimum": 0.0,
                         "maximum": 1.0
@@ -211,7 +212,7 @@ async def handle_list_tools() -> list[Tool]:
             description=(
                 "使用即梦视频3.0根据文本提示生成视频。"
                 "基于文本描述创建短视频剪辑。"
-                "支持各种分辨率和宽高比。"
+                "支持多种宽高比、分辨率和时长设置。"
             ),
             inputSchema={
                 "type": "object",
@@ -220,23 +221,23 @@ async def handle_list_tools() -> list[Tool]:
                         "type": "string",
                         "description": "要生成视频的详细文本描述"
                     },
-                    "width": {
-                        "type": "integer",
-                        "description": "视频宽度(像素)",
-                        "default": 720,
-                        "enum": [480, 720, 1280, 1920]
-                    },
-                    "height": {
-                        "type": "integer",
-                        "description": "视频高度(像素)",
-                        "default": 480,
-                        "enum": [480, 720, 1080]
+                    "ratio": {
+                        "type": "string",
+                        "description": "视频宽高比",
+                        "default": "1:1",
+                        "enum": ["1:1", "4:3", "3:4", "16:9", "9:16"]
                     },
                     "resolution": {
                         "type": "string",
-                        "description": "视频分辨率预设",
+                        "description": "视频分辨率",
                         "default": "720p",
                         "enum": ["480p", "720p", "1080p"]
+                    },
+                    "duration": {
+                        "type": "integer",
+                        "description": "视频时长(秒)",
+                        "default": 5,
+                        "enum": [5, 10]
                     },
                     "model": {
                         "type": "string",
@@ -251,7 +252,7 @@ async def handle_list_tools() -> list[Tool]:
             name="image_to_video",
             description=(
                 "使用即梦视频3.0从图像生成视频。"
-                "接受一张或多张图像,根据文本提示为它们添加动画效果。"
+                "接受一张或多张图像作为首帧/尾帧,根据文本提示为它们添加动画效果。"
                 "适用于从静态图像创建动画。"
             ),
             inputSchema={
@@ -263,29 +264,29 @@ async def handle_list_tools() -> list[Tool]:
                     },
                     "file_paths": {
                         "type": "array",
-                        "description": "要添加动画效果的图像URL数组",
+                        "description": "首帧/尾帧图像URL数组",
                         "items": {
                             "type": "string"
                         },
                         "minItems": 1
                     },
-                    "width": {
-                        "type": "integer",
-                        "description": "视频宽度(像素)",
-                        "default": 720,
-                        "enum": [480, 720, 1280, 1920]
-                    },
-                    "height": {
-                        "type": "integer",
-                        "description": "视频高度(像素)",
-                        "default": 480,
-                        "enum": [480, 720, 1080]
+                    "ratio": {
+                        "type": "string",
+                        "description": "视频宽高比",
+                        "default": "1:1",
+                        "enum": ["1:1", "4:3", "3:4", "16:9", "9:16"]
                     },
                     "resolution": {
                         "type": "string",
-                        "description": "视频分辨率预设",
+                        "description": "视频分辨率",
                         "default": "720p",
                         "enum": ["480p", "720p", "1080p"]
+                    },
+                    "duration": {
+                        "type": "integer",
+                        "description": "视频时长(秒)",
+                        "default": 5,
+                        "enum": [5, 10]
                     },
                     "model": {
                         "type": "string",
@@ -314,12 +315,14 @@ async def handle_call_tool(
             # 准备请求数据
             model = arguments.get("model", DEFAULT_MODEL)
             prompt = arguments["prompt"]
+            ratio = arguments.get("ratio", "1:1")
+            resolution = arguments.get("resolution", "2k")
             data = {
                 "model": model,
                 "prompt": prompt,
-                "negativePrompt": arguments.get("negative_prompt", ""),
-                "width": arguments.get("width", 1536),
-                "height": arguments.get("height", 864),
+                "negative_prompt": arguments.get("negative_prompt", ""),
+                "ratio": ratio,
+                "resolution": resolution,
                 "sample_strength": arguments.get("sample_strength", 0.5)
             }
 
@@ -327,7 +330,7 @@ async def handle_call_tool(
             print(f"🎨 开始生成图像")
             print(f"📝 模型: {model}")
             print(f"💬 提示词: {prompt[:100]}{'...' if len(prompt) > 100 else ''}")
-            print(f"📐 尺寸: {data['width']}x{data['height']}")
+            print(f"📐 宽高比: {ratio}, 分辨率: {resolution}")
             print(f"{'='*60}\n")
 
             # 发起API请求
@@ -360,12 +363,14 @@ async def handle_call_tool(
             # 准备请求数据
             model = arguments.get("model", DEFAULT_MODEL)
             prompt = arguments["prompt"]
+            ratio = arguments.get("ratio", "1:1")
+            resolution = arguments.get("resolution", "2k")
             data = {
                 "model": model,
                 "prompt": prompt,
                 "images": arguments["images"],
-                "width": arguments.get("width", 1536),
-                "height": arguments.get("height", 864),
+                "ratio": ratio,
+                "resolution": resolution,
                 "sample_strength": arguments.get("sample_strength", 0.5)
             }
 
@@ -374,6 +379,7 @@ async def handle_call_tool(
             print(f"📝 模型: {model}")
             print(f"💬 提示词: {prompt[:100]}{'...' if len(prompt) > 100 else ''}")
             print(f"🖼️  输入图像数: {len(arguments['images'])}")
+            print(f"📐 宽高比: {ratio}, 分辨率: {resolution}")
             print(f"{'='*60}\n")
 
             # 发起API请求
@@ -409,19 +415,22 @@ async def handle_call_tool(
             # 准备请求数据
             model = arguments.get("model", "jimeng-video-3.0")
             prompt = arguments["prompt"]
+            ratio = arguments.get("ratio", "1:1")
+            resolution = arguments.get("resolution", "720p")
+            duration = arguments.get("duration", 5)
             data = {
                 "model": model,
                 "prompt": prompt,
-                "width": arguments.get("width", 720),
-                "height": arguments.get("height", 480),
-                "resolution": arguments.get("resolution", "720p")
+                "ratio": ratio,
+                "resolution": resolution,
+                "duration": duration
             }
 
             print(f"\n{'='*60}")
             print(f"🎬 开始生成视频")
             print(f"📝 模型: {model}")
             print(f"💬 提示词: {prompt[:100]}{'...' if len(prompt) > 100 else ''}")
-            print(f"📐 分辨率: {data['resolution']}")
+            print(f"📐 宽高比: {ratio}, 分辨率: {resolution}, 时长: {duration}秒")
             print(f"{'='*60}\n")
 
             # 发起API请求
@@ -459,13 +468,16 @@ async def handle_call_tool(
             model = arguments.get("model", "jimeng-video-3.0")
             prompt = arguments["prompt"]
             file_paths = arguments["file_paths"]
+            ratio = arguments.get("ratio", "1:1")
+            resolution = arguments.get("resolution", "720p")
+            duration = arguments.get("duration", 5)
             data = {
                 "model": model,
                 "prompt": prompt,
-                "filePaths": file_paths,
-                "width": arguments.get("width", 720),
-                "height": arguments.get("height", 480),
-                "resolution": arguments.get("resolution", "720p")
+                "file_paths": file_paths,
+                "ratio": ratio,
+                "resolution": resolution,
+                "duration": duration
             }
 
             print(f"\n{'='*60}")
@@ -473,7 +485,7 @@ async def handle_call_tool(
             print(f"📝 模型: {model}")
             print(f"💬 提示词: {prompt[:100]}{'...' if len(prompt) > 100 else ''}")
             print(f"🖼️  输入图像数: {len(file_paths)}")
-            print(f"📐 分辨率: {data['resolution']}")
+            print(f"📐 宽高比: {ratio}, 分辨率: {resolution}, 时长: {duration}秒")
             print(f"{'='*60}\n")
 
             # 发起API请求

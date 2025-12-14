@@ -9,7 +9,7 @@ import os
 load_dotenv()
 
 API_KEY = os.getenv("JIMENG_API_KEY")
-API_BASE_URL = os.getenv("JIMENG_API_URL", "http://localhost:8001")
+API_BASE_URL = os.getenv("JIMENG_API_URL", "https://jimeng1.duckcloud.fun")
 
 async def test_text_to_image():
     """测试文生图API"""
@@ -20,10 +20,10 @@ async def test_text_to_image():
     }
 
     data = {
-        "model": "jimeng-4.0",
+        "model": "jimeng-4.5",
         "prompt": "一只可爱的小猫",
-        "width": 1024,
-        "height": 1024,
+        "ratio": "1:1",
+        "resolution": "2k",
         "sample_strength": 0.5
     }
 

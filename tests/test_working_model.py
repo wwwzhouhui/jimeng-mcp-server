@@ -25,8 +25,8 @@ async def test_with_working_model():
     data = {
         "model": MODEL,
         "prompt": "一只可爱的小猫咪",
-        "width": 1024,
-        "height": 1024
+        "ratio": "1:1",
+        "resolution": "2k"
     }
 
     print(f"📦 请求数据: {json.dumps(data, ensure_ascii=False, indent=2)}")

@@ -4,24 +4,40 @@
 
 > **核心依赖**: 本项目基于 [jimeng-free-api-all](https://github.com/wwwzhouhui/jimeng-free-api-all) 开源项目构建,该项目提供了即梦AI的逆向接口实现,支持文生图、图生视频等多种AI生成能力。
 
+## 更新日志
+
+### 2024-12-14 v0.2.0 - 参数格式同步更新
+- **同步上游 v4.7 更新**：适配 jimeng-free-api-all 最新 API 参数格式
+- **图片接口参数变更**：
+  - 移除 `width`、`height` 参数
+  - 新增 `ratio` 参数：支持 `1:1`、`4:3`、`3:4`、`16:9`、`9:16`、`3:2`、`2:3`、`21:9`
+  - 新增 `resolution` 参数：支持 `1k`、`2k`（默认）、`4k`
+- **视频接口参数变更**：
+  - 移除 `width`、`height` 参数
+  - 新增 `ratio` 参数：支持 `1:1`（默认）、`4:3`、`3:4`、`16:9`、`9:16`
+  - `resolution` 参数：支持 `480p`、`720p`（默认）、`1080p`
+  - 新增 `duration` 参数：视频时长，支持 5 或 10 秒
+- **默认模型升级**：默认图像模型从 `jimeng-4.0` 升级为 `jimeng-4.5`
+
 ## 功能特性
 
 本MCP服务器提供四个主要工具:
 
 ### 1. 文本生成图像 (text_to_image)
-使用即梦4.0根据文本描述生成高质量图像。
+使用即梦4.5根据文本描述生成高质量图像。
 
 **能力:**
 - 从详细的文本提示创建图像
 - 支持负面提示词(要避免的内容)
-- 可自定义尺寸(512px到2048px)
-- 可调节采样强度以控制创意程度
+- 多种宽高比(1:1, 4:3, 3:4, 16:9, 9:16, 3:2, 2:3, 21:9)
+- 多种分辨率(1k, 2k, 4k)
+- jimeng-4.5/4.1/4.0 支持智能多图生成
 
 ### 2. 图像合成 (image_composition)
 基于文本指令将多张图像融合在一起。
 
 **能力:**
-- 合成2张或更多图像
+- 合成1-10张图像
 - 风格迁移和图像混合
 - 基于文本提示的智能合成
 - 生成多个变体结果
@@ -32,8 +48,8 @@
 **能力:**
 - 从文本创建动画视频
 - 支持多种分辨率(480p, 720p, 1080p)
-- 可自定义尺寸和宽高比
-- 高质量视频输出
+- 多种宽高比(1:1, 4:3, 3:4, 16:9, 9:16)
+- 可选时长(5秒或10秒)
 
 ### 4. 图像生成视频 (image_to_video)
 基于文本提示为静态图像添加动画效果。
@@ -41,8 +57,8 @@
 **能力:**
 - 让图像动起来
 - 通过文本描述控制动画效果
-- 支持单张或多张输入图像
-- 专业品质的视频输出
+- 支持首帧/尾帧图像输入
+- 可选时长(5秒或10秒)
 
 ## 技术架构
 
@@ -159,8 +175,8 @@ curl http://localhost:8001/v1/models
 
 1. 克隆此仓库:
 ```bash
-git clone <repository-url>
-cd jimengmcp
+git clone https://github.com/wwwzhouhui/jimeng-mcp-server
+cd jimeng-mcp-server
 ```
 
 2. 根据使用模式安装包:
@@ -170,7 +186,18 @@ cd jimengmcp
 pip install -e .
 ```
 
+![image-20251115000103158](https://mypicture-1258720957.cos.ap-nanjing.myqcloud.com/Obsidian/image-20251115000103158.png)
+
+  检查安装是否成功 输入下面命令
+
+```
+pip show jimeng-mcp
+```
+
+   ![image-20251115000156415](https://mypicture-1258720957.cos.ap-nanjing.myqcloud.com/Obsidian/image-20251115000156415.png)
+
 **SSE模式**
+
 ```bash
 pip install -e ".[sse]"
 ```
@@ -199,13 +226,29 @@ JIMENG_API_KEY=your_sessionid_here
 JIMENG_API_URL=http://localhost:8001
 
 # 可选: 默认使用的模型
-JIMENG_MODEL=jimeng-4.0
+JIMENG_MODEL=jimeng-4.5
 ```
 
 **重要说明:**
 - `JIMENG_API_KEY`: 填入从即梦官网获取的 sessionid
 - `JIMENG_API_URL`: 填入第一步部署的 jimeng-free-api-all 服务地址
 - 如果 jimeng-free-api-all 部署在其他端口或服务器,请相应修改 URL
+
+####   claude code 安装MCP
+
+  我们这里使用cc-switch配置
+
+  ![image-20251115000346111](https://mypicture-1258720957.cos.ap-nanjing.myqcloud.com/Obsidian/image-20251115000346111.png)
+
+![image-20251115000621931](https://mypicture-1258720957.cos.ap-nanjing.myqcloud.com/Obsidian/image-20251115000621931.png)
+
+ 配置完成后，点击保存
+
+![image-20251115000703357](https://mypicture-1258720957.cos.ap-nanjing.myqcloud.com/Obsidian/image-20251115000703357.png)
+
+   使用claude code  mcp list 查看
+
+  ![image-20251115000759865](https://mypicture-1258720957.cos.ap-nanjing.myqcloud.com/Obsidian/image-20251115000759865.png)
 
 ## 运行模式
 
@@ -268,8 +311,8 @@ JIMENG_API_KEY=您的API密钥
 # 可选: API基础URL(默认为 https://jimeng.duckcloud.fun)
 JIMENG_API_URL=https://jimeng.duckcloud.fun
 
-# 可选: 图像生成的默认模型(默认为 jimeng-4.0)
-JIMENG_MODEL=jimeng-4.0
+# 可选: 图像生成的默认模型(默认为 jimeng-4.5)
+JIMENG_MODEL=jimeng-4.5
 ```
 
 ### Cherry Studio配置
@@ -364,6 +407,39 @@ https://p3-dreamina-sign.byteimg.com/tos-cn-i-tb4s082cfz/bab623359bd9410da0c1f07
 
 ![image-20251114231206562](https://mypicture-1258720957.cos.ap-nanjing.myqcloud.com/Obsidian/image-20251114231206562.png)
 
+### 在claude code中使用
+
+#### 文本生成图像示例
+
+```
+请使用jimeng-mcp-server 生成一张图像:小猪和小狗踢球
+```
+
+![image-20251115003223041](https://mypicture-1258720957.cos.ap-nanjing.myqcloud.com/Obsidian/image-20251115003223041.png)
+
+#### 图像合成示例
+
+```
+请使用jimeng-mcp-server 将这两张图像合成在一起:
+- 图像1: https://p3-dreamina-sign.byteimg.com/tos-cn-i-tb4s082cfz/bab623359bd9410da0c1f07897b16fec~tplv-tb4s082cfz-resize:0:0.image?lk3s=8e790bc3&x-expires=1788961069&x-signature=cbtnyeSIcqWpngHdoYWFkCra3cA%3D
+- 图像2: https://p3-dreamina-sign.byteimg.com/tos-cn-i-tb4s082cfz/6acf16d07c47413898aea2bdd1ad339e~tplv-tb4s082cfz-resize:0:0.image?lk3s=8e790bc3&x-expires=1788961069&x-signature=30S2i%2FvCH0eRR32CehcEaK8t5ns%3D
+创建一个艺术风格的无缝融合
+```
+
+![image-20251115003456583](https://mypicture-1258720957.cos.ap-nanjing.myqcloud.com/Obsidian/image-20251115003456583.png)
+
+图片生成结果
+
+![image-20251115003526890](https://mypicture-1258720957.cos.ap-nanjing.myqcloud.com/Obsidian/image-20251115003526890.png)
+
+#### 文本生成视频示例
+
+```
+请使用jimeng-mcp-server 创建一个视频:小马过河
+```
+
+
+
 ### 使用HTTP API
 
 当服务器以HTTP模式运行时,您可以通过REST API调用:
@@ -397,8 +473,8 @@ curl -X POST http://localhost:8000/text-to-image \
   -H "Content-Type: application/json" \
   -d '{
     "prompt": "可爱的卡通小斑马在花园里玩耍",
-    "width": 1536,
-    "height": 864,
+    "ratio": "16:9",
+    "resolution": "2k",
     "sample_strength": 0.6
   }'
 ```
@@ -413,7 +489,9 @@ curl -X POST http://localhost:8000/image-composition \
     "images": [
       "https://example.com/image1.jpg",
       "https://example.com/image2.jpg"
-    ]
+    ],
+    "ratio": "16:9",
+    "resolution": "2k"
   }'
 ```
 
@@ -424,7 +502,9 @@ curl -X POST http://localhost:8000/text-to-video \
   -H "Content-Type: application/json" \
   -d '{
     "prompt": "一个人在森林中缓慢向前走",
-    "resolution": "720p"
+    "ratio": "16:9",
+    "resolution": "720p",
+    "duration": 5
   }'
 ```
 
@@ -435,7 +515,10 @@ curl -X POST http://localhost:8000/image-to-video \
   -H "Content-Type: application/json" \
   -d '{
     "prompt": "添加轻柔的运动效果",
-    "file_paths": ["https://example.com/image.jpg"]
+    "file_paths": ["https://example.com/image.jpg"],
+    "ratio": "16:9",
+    "resolution": "720p",
+    "duration": 5
   }'
 ```
 
@@ -449,8 +532,8 @@ response = requests.post(
     "http://localhost:8000/text-to-image",
     json={
         "prompt": "可爱的卡通小斑马在花园里玩耍",
-        "width": 1536,
-        "height": 864,
+        "ratio": "16:9",
+        "resolution": "2k",
         "sample_strength": 0.6
     }
 )
@@ -473,8 +556,8 @@ fetch('http://localhost:8000/text-to-image', {
   },
   body: JSON.stringify({
     prompt: '可爱的卡通小斑马在花园里玩耍',
-    width: 1536,
-    height: 864,
+    ratio: '16:9',
+    resolution: '2k',
     sample_strength: 0.6
   })
 })
@@ -494,32 +577,32 @@ fetch('http://localhost:8000/text-to-image', {
 
 | 参数 | 类型 | 必需 | 默认值 | 描述 |
 |-----|------|------|--------|------|
-| prompt | string | 是 | - | 图像的详细描述 |
+| prompt | string | 是 | - | 图像的详细描述，jimeng-4.x支持多图生成 |
 | negative_prompt | string | 否 | "" | 要在图像中避免的内容 |
-| width | integer | 否 | 1536 | 图像宽度 (512, 768, 1024, 1536, 2048) |
-| height | integer | 否 | 864 | 图像高度 (512, 768, 864, 1024, 2048) |
-| sample_strength | float | 否 | 0.5 | 创意程度 (0.0-1.0) |
-| model | string | 否 | jimeng-4.0 | 使用的模型 |
+| ratio | string | 否 | 1:1 | 宽高比 (1:1, 4:3, 3:4, 16:9, 9:16, 3:2, 2:3, 21:9) |
+| resolution | string | 否 | 2k | 分辨率 (1k, 2k, 4k) |
+| sample_strength | float | 否 | 0.5 | 精细度 (0.0-1.0) |
+| model | string | 否 | jimeng-4.5 | 使用的模型 |
 
 ### image_composition (图像合成)
 
 | 参数 | 类型 | 必需 | 默认值 | 描述 |
 |-----|------|------|--------|------|
 | prompt | string | 是 | - | 如何合成图像 |
-| images | array | 是 | - | 图像URL数组(至少2张) |
-| width | integer | 否 | 1536 | 输出宽度 |
-| height | integer | 否 | 864 | 输出高度 |
-| sample_strength | float | 否 | 0.5 | 合成强度 (0.0-1.0) |
-| model | string | 否 | jimeng-4.0 | 使用的模型 |
+| images | array | 是 | - | 图像URL数组(1-10张) |
+| ratio | string | 否 | 1:1 | 输出宽高比 |
+| resolution | string | 否 | 2k | 输出分辨率 (1k, 2k, 4k) |
+| sample_strength | float | 否 | 0.5 | 精细度 (0.0-1.0) |
+| model | string | 否 | jimeng-4.5 | 使用的模型 |
 
 ### text_to_video (文本生成视频)
 
 | 参数 | 类型 | 必需 | 默认值 | 描述 |
 |-----|------|------|--------|------|
 | prompt | string | 是 | - | 视频描述 |
-| width | integer | 否 | 720 | 视频宽度 (480, 720, 1280, 1920) |
-| height | integer | 否 | 480 | 视频高度 (480, 720, 1080) |
-| resolution | string | 否 | 720p | 分辨率预设 (480p, 720p, 1080p) |
+| ratio | string | 否 | 1:1 | 宽高比 (1:1, 4:3, 3:4, 16:9, 9:16) |
+| resolution | string | 否 | 720p | 分辨率 (480p, 720p, 1080p) |
+| duration | integer | 否 | 5 | 视频时长 (5或10秒) |
 | model | string | 否 | jimeng-video-3.0 | 使用的模型 |
 
 ### image_to_video (图像生成视频)
@@ -527,10 +610,10 @@ fetch('http://localhost:8000/text-to-image', {
 | 参数 | 类型 | 必需 | 默认值 | 描述 |
 |-----|------|------|--------|------|
 | prompt | string | 是 | - | 动画描述 |
-| file_paths | array | 是 | - | 要添加动画的图像URL数组 |
-| width | integer | 否 | 720 | 视频宽度 (480, 720, 1280, 1920) |
-| height | integer | 否 | 480 | 视频高度 (480, 720, 1080) |
-| resolution | string | 否 | 720p | 分辨率预设 (480p, 720p, 1080p) |
+| file_paths | array | 是 | - | 首帧/尾帧图像URL数组 |
+| ratio | string | 否 | 1:1 | 宽高比 (1:1, 4:3, 3:4, 16:9, 9:16) |
+| resolution | string | 否 | 720p | 分辨率 (480p, 720p, 1080p) |
+| duration | integer | 否 | 5 | 视频时长 (5或10秒) |
 | model | string | 否 | jimeng-video-3.0 | 使用的模型 |
 
 ## 开发

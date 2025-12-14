@@ -2,3 +2,11 @@ src/jimeng_mcp/.ipynb_checkpoints/server-checkpoint.py
 src/jimeng_mcp/__pycache__/__init__.cpython-310.pyc
 src/jimeng_mcp/__pycache__/server.cpython-310.pyc
 tests/.ipynb_checkpoints/test_server-checkpoint.py
+.env
+curl.txt
+.claude/settings.local.json
+.ipynb_checkpoints/claude_desktop_config-checkpoint.json
+.ipynb_checkpoints/pyproject-checkpoint.toml
+src/jimeng_mcp/__pycache__/__init__.cpython-312.pyc
+src/jimeng_mcp/__pycache__/server.cpython-312.pyc
+tests/__pycache__/test_server.cpython-312-pytest-7.4.3.pyc
