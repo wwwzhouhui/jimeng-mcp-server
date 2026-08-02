@@ -453,7 +453,7 @@ A: 确保 `.env` 文件配置正确，使用 `mcp list` 命令检查 MCP 服务�
 
 欢迎加入技术交流群，分享你的使用心得和反馈建议：
 
-![技术交流群](https://mypicture-1258720957.cos.ap-nanjing.myqcloud.com/Obsidian/image-20260726105010363.png)
+![技术交流群](https://mypicture-1258720957.cos.ap-nanjing.myqcloud.com/Obsidian/20260802145421_15_2.jpg)
 
 ---
 
